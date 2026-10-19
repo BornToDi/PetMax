@@ -1,0 +1,191 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Petmax Deployment Guide</title><style>@page {size:A4;margin:18mm 15mm;} body{font:10pt Arial,sans-serif;color:#172539;line-height:1.45} h1{font-size:26pt;color:#075c70;border-bottom:3px solid #13a296;padding-bottom:12px} h2{font-size:15pt;color:#075c70;margin-top:24px;break-after:avoid} p{margin:9px 0} table{border-collapse:collapse;width:100%;margin:12px 0;font-size:9pt} th,td{border:1px solid #ccd7df;padding:7px;text-align:left;overflow-wrap:anywhere} th{background:#e9f3f5} tr{break-inside:avoid} pre{background:#f1f4f7;border-left:3px solid #13a296;padding:10px;white-space:pre-wrap;overflow-wrap:anywhere;font:8.5pt Consolas,monospace} code{font-family:Consolas,monospace} .bullet{margin-left:12px}</style></head><body><h1>Petmax deployment guide</h1>
+<p>Deployment completed: 18 October 2026</p>
+<h2>Essential information</h2>
+<table><tr><th>Item</th><th>Value</th></tr><tr><td>Website</td><td>https://petmax.com.bd</td></tr><tr><td>Alternate address</td><td>https://www.petmax.com.bd</td></tr><tr><td>Hosting</td><td>OVHcloud VPS</td></tr><tr><td>VPS name</td><td>vps-48c48331.vps.ovh.us</td></tr><tr><td>Public IPv4</td><td>40.160.225.25</td></tr><tr><td>Operating system</td><td>Ubuntu 24.04.3 LTS</td></tr><tr><td>SSH user</td><td>admin</td></tr><tr><td>Local project</td><td>D:\PetCare\PetCare Hub</td></tr><tr><td>Local deployment archive</td><td>D:\PetCare\petmax-deploy.tar.gz</td></tr><tr><td>Server application folder</td><td>/home/admin/petmax</td></tr><tr><td>Application address</td><td>http://127.0.0.1:3100 (inside VPS only)</td></tr><tr><td>Application service</td><td>petmax.service</td></tr><tr><td>Web server</td><td>Apache, ports 80 and 443</td></tr><tr><td>Domain registrar</td><td>BTCL</td></tr><tr><td>DNS provider</td><td>Cloudflare, Free plan</td></tr><tr><td>Nameservers</td><td>gina.ns.cloudflare.com / ken.ns.cloudflare.com</td></tr></table>
+<p>Passwords and private keys are deliberately excluded. SSH uses the VPS admin credentials, which are separate from OVH account login credentials. Change any passwords previously shared in screenshots.</p>
+<h2>1. Connect to the server</h2>
+<p>Run on your Windows computer in CMD or PowerShell:</p>
+<pre><code>ssh admin@40.160.225.25</code></pre>
+<p>Enter the VPS admin password when prompted. Password characters are not displayed.</p>
+<p>Run inside the VPS to inspect the environment:</p>
+<pre><code>whoami
+cat /etc/os-release
+sudo -v
+node --version
+npm --version
+sudo ss -ltnp
+ls -la /var/www /opt
+sudo apache2ctl -S
+sudo apache2ctl -M
+sudo ufw status</code></pre>
+<p>At deployment, Node.js was v20.19.5 and npm was 10.8.2. Apache, MySQL, MongoDB and another Next.js application on port 3000 already existed. Petmax uses port 3100. Preserve existing applications and Apache sites.</p>
+<h2>2. Build locally and package</h2>
+<p>The production build was fixed by aligning Vite to version 8, enabling the application build, and selecting the Nitro Node server preset. The existing Windows build used Node.js v24.21.0. Use Node.js 24 for local builds.</p>
+<p>Relevant package.json scripts:</p>
+<pre><code>&quot;build&quot;: &quot;vite build --app&quot;,
+&quot;start&quot;: &quot;node .output/server/index.mjs&quot;</code></pre>
+<p>Relevant vite.config.ts option, within the existing defineConfig call:</p>
+<pre><code>nitro: { preset: &quot;node-server&quot; },</code></pre>
+<p>One-time dependency correction already applied; do not repeat for routine deployments:</p>
+<pre><code>cd &quot;D:\PetCare\PetCare Hub&quot;
+npm.cmd install --save-dev vite@^8 --legacy-peer-deps --cache D:\PetCare\.npm-cache</code></pre>
+<p>For future builds, run on Windows PowerShell:</p>
+<pre><code>cd &quot;D:\PetCare\PetCare Hub&quot;
+# Install dependencies on a fresh checkout, or after lockfile changes:
+npm.cmd ci --legacy-peer-deps
+npm.cmd run build</code></pre>
+<p>Only package after the build succeeds:</p>
+<pre><code>tar -czf &quot;D:\PetCare\petmax-deploy.tar.gz&quot; -C &quot;D:\PetCare\PetCare Hub&quot; .output
+scp &quot;D:\PetCare\petmax-deploy.tar.gz&quot; admin@40.160.225.25:/home/admin/</code></pre>
+<p>The archive contains the entire .output folder, including server and public assets. It does not include the source project. Keep the source and package-lock.json backed up separately.</p>
+<h2>3. Initial extraction and temporary test</h2>
+<p>Run inside VPS (initial deployment only):</p>
+<pre><code>mkdir -p ~/petmax
+tar -xzf ~/petmax-deploy.tar.gz -C ~/petmax
+cd ~/petmax
+HOST=127.0.0.1 PORT=3100 node .output/server/index.mjs</code></pre>
+<p>From a second SSH connection:</p>
+<pre><code>curl -I http://127.0.0.1:3100</code></pre>
+<p>Expected: HTTP 200. Stop the temporary foreground application with Ctrl+C before starting the service below. Opening 127.0.0.1 in your computer&#x27;s browser addresses your computer, not the VPS.</p>
+<h2>4. Permanent service (already configured)</h2>
+<p>This is the configuration used during initial deployment. Routine updates do not require recreating it.</p>
+<pre><code>sudo tee /etc/systemd/system/petmax.service &gt; /dev/null &lt;&lt;&#x27;EOF&#x27;
+[Unit]
+Description=Petmax website
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/petmax
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3100
+ExecStart=/usr/bin/env node /home/admin/petmax/.output/server/index.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now petmax
+sudo systemctl status petmax --no-pager
+curl -I http://127.0.0.1:3100</code></pre>
+<p>The enabled service starts on reboot and restarts after application failures. SSH can be closed safely.</p>
+<h2>5. Apache reverse proxy (already configured)</h2>
+<p>Original HTTP configuration used during setup:</p>
+<pre><code>sudo tee /etc/apache2/sites-available/petmax.conf &gt; /dev/null &lt;&lt;&#x27;EOF&#x27;
+&lt;VirtualHost *:80&gt;
+    ServerName petmax.com.bd
+    ServerAlias www.petmax.com.bd
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:3100/
+    ProxyPassReverse / http://127.0.0.1:3100/
+
+    ErrorLog ${APACHE_LOG_DIR}/petmax-error.log
+    CustomLog ${APACHE_LOG_DIR}/petmax-access.log combined
+&lt;/VirtualHost&gt;
+EOF
+
+sudo a2ensite petmax.conf
+sudo apache2ctl configtest</code></pre>
+<p>Only if configtest reports Syntax OK:</p>
+<pre><code>sudo systemctl reload apache2
+curl -I -H &#x27;Host: petmax.com.bd&#x27; http://127.0.0.1</code></pre>
+<p>Certbot subsequently added HTTPS and HTTP redirects. Do not overwrite the current configuration with the original example during routine updates.</p>
+<p>Important configuration files:</p>
+<pre><code>/etc/apache2/sites-available/petmax.conf
+/etc/apache2/sites-available/petmax-le-ssl.conf
+/etc/systemd/system/petmax.service</code></pre>
+<h2>6. DNS configuration</h2>
+<p>Cloudflare DNS records:</p>
+<table><tr><th>Type</th><th>Name</th><th>Content</th><th>Proxy</th><th>TTL</th></tr><tr><td>A</td><td>@</td><td>40.160.225.25</td><td>DNS only</td><td>Auto</td></tr><tr><td>A</td><td>www</td><td>40.160.225.25</td><td>DNS only</td><td>Auto</td></tr></table>
+<p>Use @ for the root domain, not @www. Keep DNS only for the documented setup.</p>
+<p>BTCL navigation: Domain → Domain-Market → Search → search petmax.com.bd → DNS column → Edit.</p>
+<table><tr><th>BTCL field</th><th>Value</th></tr><tr><td>Primary DNS</td><td>gina.ns.cloudflare.com</td></tr><tr><td>Secondary DNS</td><td>ken.ns.cloudflare.com</td></tr><tr><td>Tertiary DNS</td><td>Empty</td></tr><tr><td>DS Records</td><td>Empty in the deployed configuration</td></tr></table>
+<p>Nameserver changes were submitted successfully. The registry initially still returned BTCL&#x27;s old nameservers, causing SERVFAIL. Once it updated, public resolvers returned the Cloudflare nameservers and VPS address. Do not repeatedly resubmit settings while waiting.</p>
+<p>No mail records were imported by the initial Cloudflare scan. If domain email is needed, obtain and add the mail provider&#x27;s MX, SPF, DKIM and other required records separately.</p>
+<p>VPS DNS checks:</p>
+<pre><code>dig @gina.ns.cloudflare.com petmax.com.bd A +short
+dig @gina.ns.cloudflare.com www.petmax.com.bd A +short
+dig @1.1.1.1 petmax.com.bd NS +short
+dig @1.1.1.1 petmax.com.bd A +short
+dig @1.1.1.1 www.petmax.com.bd A +short</code></pre>
+<p>Troubleshooting with full responses:</p>
+<pre><code>dig @1.1.1.1 petmax.com.bd NS
+dig @8.8.8.8 petmax.com.bd A
+dig +trace petmax.com.bd NS</code></pre>
+<p>Windows CMD checks:</p>
+<pre><code>nslookup -type=ns petmax.com.bd 1.1.1.1
+nslookup petmax.com.bd 1.1.1.1
+nslookup www.petmax.com.bd 1.1.1.1</code></pre>
+<h2>7. HTTPS certificate (already installed)</h2>
+<p>Certbot version at deployment: 2.9.0. After both domain names resolved to the VPS, these commands were used:</p>
+<pre><code>certbot --version
+sudo certbot --apache -d petmax.com.bd -d www.petmax.com.bd --redirect</code></pre>
+<p>Certificate paths:</p>
+<pre><code>/etc/letsencrypt/live/petmax.com.bd/fullchain.pem
+/etc/letsencrypt/live/petmax.com.bd/privkey.pem
+/etc/letsencrypt/renewal/petmax.com.bd.conf</code></pre>
+<p>The initial certificate expires on 16 January 2027; its expiry date changes after renewal. Certbot reported that automatic renewal was scheduled. Do not share or copy the private key into the public website or source repository.</p>
+<p>Verification commands:</p>
+<pre><code>curl -I https://petmax.com.bd
+curl -I https://www.petmax.com.bd
+sudo certbot renew --dry-run</code></pre>
+<p>Verified results: both HTTPS addresses returned HTTP 200. Simulated renewals succeeded for Petmax and the existing nuhashgazi.com certificate. The dry-run command tests all configured certificates; it does not require manual renewal after each deployment.</p>
+<h2>8. Future website updates</h2>
+<p>Build and upload using section 2 first. No DNS or certificate changes are needed for ordinary content/design updates.</p>
+<p>The following safer update procedure uses a staging folder and retains the previous build for rollback. Run commands one step at a time and stop if any command fails.</p>
+<p>Inside VPS:</p>
+<pre><code>petmax_release=$(date +%Y%m%d-%H%M%S)
+petmax_stage=$(mktemp -d /home/admin/petmax-stage.XXXXXX)
+tar -xzf /home/admin/petmax-deploy.tar.gz -C &quot;$petmax_stage&quot;
+test -f &quot;$petmax_stage/.output/server/index.mjs&quot; &amp;&amp; echo &quot;Staged build ready&quot;</code></pre>
+<p>Continue only after Staged build ready is shown:</p>
+<pre><code>sudo systemctl stop petmax
+mv /home/admin/petmax/.output &quot;/home/admin/petmax/.output-backup-$petmax_release&quot;
+mv &quot;$petmax_stage/.output&quot; /home/admin/petmax/.output
+sudo systemctl start petmax
+sudo systemctl status petmax --no-pager</code></pre>
+<p>After the service starts (wait a few seconds if needed):</p>
+<pre><code>curl -I http://127.0.0.1:3100
+curl -I https://petmax.com.bd</code></pre>
+<p>This procedure causes a brief interruption while switching builds. Keep the backup until the updated site has been checked in a browser.</p>
+<p>If the new version fails, rollback in the same SSH session:</p>
+<pre><code>sudo systemctl stop petmax
+mv /home/admin/petmax/.output &quot;/home/admin/petmax/.output-failed-$petmax_release&quot;
+mv &quot;/home/admin/petmax/.output-backup-$petmax_release&quot; /home/admin/petmax/.output
+sudo systemctl start petmax</code></pre>
+<p>If reconnecting first, replace the variable-based backup name with the actual backup folder shown by ls -la /home/admin/petmax. Do not remove backups until you have verified the active build.</p>
+<h2>9. Troubleshooting and maintenance</h2>
+<p>Run inside VPS:</p>
+<pre><code># Application status and recent errors
+sudo systemctl status petmax --no-pager
+sudo journalctl -u petmax -n 100 --no-pager
+
+# Restart application after investigating a problem
+sudo systemctl restart petmax
+
+# Apache status and configuration
+sudo apache2ctl configtest
+sudo apache2ctl -S
+sudo systemctl status apache2 --no-pager
+sudo tail -n 100 /var/log/apache2/petmax-error.log
+
+# Certificate details
+sudo certbot certificates
+
+# Disk usage
+df -h</code></pre>
+<table><tr><th>Symptom</th><th>Check</th></tr><tr><td>SSH Permission denied</td><td>Use admin, not root; verify VPS credentials</td></tr><tr><td>127.0.0.1 fails in PC browser</td><td>It is local to the computer; use the public HTTPS domain</td></tr><tr><td>Apache 502/503</td><td>Check petmax service, logs and localhost:3100</td></tr><tr><td>Domain SERVFAIL</td><td>Check authoritative nameservers, delegation and DNS responses</td></tr><tr><td>Wrong website</td><td>Check DNS IP and Apache ServerName/VirtualHost mapping</td></tr><tr><td>SSL issue</td><td>Check certificate status, both DNS records, ports 80/443 and renewal logs</td></tr></table>
+<p>The VPS reported pending OS updates and a required restart during deployment. Schedule OS maintenance separately, considering the other existing applications. No OS upgrade or reboot was performed in this deployment.</p>
+<h2>10. Functional limits and final checklist</h2>
+<p class="bullet">• The appointment form is presentational; it does not submit bookings to a backend.</p>
+<p class="bullet">• Check desktop/mobile layout, images, navigation, contact links and all visible buttons after updates.</p>
+<p class="bullet">• Keep source code and lockfile backed up; a build archive is not a source backup.</p>
+<p class="bullet">• Keep Cloudflare and BTCL access under the domain owner&#x27;s control.</p>
+<p class="bullet">• Final verified infrastructure state: systemd service running, Apache routing working, DNS resolving, both HTTPS URLs returning HTTP 200, and certificate renewal simulation successful.</p></body></html>
