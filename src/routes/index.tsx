@@ -85,7 +85,17 @@ import team6 from "@/assets/team-6.jpg";
 import space1 from "@/assets/space-1.jpg";
 import space2 from "@/assets/space-2.jpg";
 import space3 from "@/assets/space-3.jpg";
-const logoAsset = { url: "/favicon.png" };
+const logoAsset = { url: "/petmax-logo-v2.png" };
+
+function ClinicLogo() {
+  return (
+    <span className="clinic-brand" role="img" aria-label="PetMAX Advanced Veterinary Clinic ? Because every life matters">
+      <span className="clinic-brand-emblem"><img src={logoAsset.url} alt="" width={2048} height={778} /></span>
+      <span className="clinic-brand-copy"><strong>PetMAX</strong><span>Advanced Veterinary Clinic</span><small>Because every life matters</small></span>
+    </span>
+  );
+}
+
 import helloPets from "@/assets/hello-pets.png";
 
 export const Route = createFileRoute("/")({
@@ -197,13 +207,7 @@ function SiteNav() {
     <header className="site-header sticky top-0 z-50 overflow-visible border-b border-border/40 bg-background/95 backdrop-blur-md">
       <nav aria-label="Main navigation" className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-6">
         <a href="#top" aria-label="PetMAX home" className="flex shrink-0 items-center">
-          <img
-            src={logoAsset.url}
-            alt="PetMAX Animal Care"
-            width={192}
-            height={68}
-            className="h-auto w-40 object-contain sm:w-48"
-          />
+          <ClinicLogo />
         </a>
         <div className="hidden items-center gap-1 text-sm font-medium text-foreground/75 lg:flex">
           <a href="#services" className="inline-flex min-h-11 items-center rounded-xl px-4 transition-colors hover:bg-primary/5 hover:text-primary">Services</a>
@@ -266,7 +270,7 @@ function Hero() {
         <div className="hero-copy" data-reveal>
           <span className="eyebrow"><span className="status-dot" /> A little care. A lifetime of love.</span>
           <h1>For their<br />health. For your<br /><span>peace of mind.</span></h1>
-          <p className="hero-intro">Thoughtful veterinary care for the ones who make your life a little brighter. Right here in Basundhara, Dhaka.</p>
+          <p className="hero-intro">Thoughtful veterinary care for the ones who make your life a little brighter. Right here in Bashundhara, Dhaka.</p>
           <div className="hero-actions">
             <a href="#booking" className="button-primary">Book an appointment <ArrowUpRight className="size-4" /></a>
             <a href="#services" className="button-text">Explore our care <ArrowRight className="size-4" /></a>
@@ -449,9 +453,9 @@ function Contact() {
             <p className="flex items-start gap-3">
               <MapPin className="mt-1 size-4 shrink-0 text-accent" />
               <span>
-                790/B, Road 18<br />
-                Between K &amp; L Block<br />
-                Basundhara R/A, Dhaka
+                Level 4, Seven Star Super Shop Building,<br />
+                Plot 790/B, Road 18, Block K,<br />
+                Bashundhara RA, Dhaka 1229
               </span>
             </p>
             <p className="flex items-center gap-3">
@@ -464,13 +468,13 @@ function Contact() {
             </p>
             <p className="flex items-center gap-3">
               <Clock className="size-4 text-accent" />
-              Sun&ndash;Fri 8am&ndash;7pm &middot; Sat 9am&ndash;4pm
+              &lsquo;Always Open&rsquo; 24/7
             </p>
           </div>
         </div>
         <div data-reveal className="clinic-map overflow-hidden rounded-3xl ring-1 ring-primary/10">
           <iframe
-            title="PetMAX Animal Care location"
+            title="PetMAX Advanced Veterinary Clinic location"
             src="https://www.openstreetmap.org/export/embed.html?bbox=90.41%2C23.80%2C90.44%2C23.83&layer=mapnik&marker=23.8151%2C90.4255"
             className="h-full min-h-[360px] w-full"
             loading="lazy"
@@ -501,7 +505,7 @@ function Booking() {
           </p>
           <div className="mt-10 space-y-4 text-primary-foreground/85">
             <p className="flex items-center gap-3"><Phone className="size-4 text-dusk" />+88 01755 766 766</p>
-            <p className="flex items-center gap-3"><MapPin className="size-4 text-dusk" />790/B, Road 18, Basundhara R/A, Dhaka</p>
+            <p className="flex items-center gap-3"><MapPin className="size-4 text-dusk" />Level 4, Seven Star Super Shop Building, Plot 790/B, Road 18, Block K, Bashundhara RA, Dhaka 1229</p>
           </div>
         </div>
         <div data-reveal className="booking-form relative rounded-3xl border border-white/15 bg-white/[0.07] p-6 sm:p-8">
@@ -539,9 +543,9 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-8 md:grid-cols-4 md:items-stretch">
           <div className="flex flex-col">
-            <h2 className="font-display text-5xl tracking-tight text-primary">PetMAX</h2>
+            <ClinicLogo />
             <p className="mt-3 max-w-xs text-sm text-foreground/65">
-              World‑class animal care in Basundhara R/A, Dhaka — because your pet deserves the best.
+              World‑class animal care in Bashundhara RA, Dhaka — because your pet deserves the best.
             </p>
             <div className="mt-auto pt-5">
               <a
@@ -559,7 +563,7 @@ function Footer() {
               alt="Friendly cat and dog illustration"
               width={160}
               height={160}
-              className="h-36 w-36 object-contain md:h-40 md:w-40"
+              className="footer-pets h-36 w-36 object-contain md:h-40 md:w-40"
               loading="lazy"
             />
           </div>
@@ -574,7 +578,7 @@ function Footer() {
           <div className="flex flex-col">
             <p className="font-display text-primary">Contact</p>
             <ul className="mt-4 space-y-2 text-sm text-foreground/65">
-              <li>790/B, Road 18, Basundhara R/A, Dhaka</li>
+              <li>Level 4, Seven Star Super Shop Building, Plot 790/B, Road 18, Block K, Bashundhara RA, Dhaka 1229</li>
               <li>+88 01755 766 766</li>
               <li>hpetmax@gmail.com</li>
             </ul>
@@ -584,7 +588,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-primary/10 pt-5 text-xs text-foreground/55 md:flex-row">
-          <p>© {new Date().getFullYear()} PetMAX Animal Care. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} PetMAX Advanced Veterinary Clinic. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-primary">Privacy</a>
             <a href="#" className="hover:text-primary">Terms</a>

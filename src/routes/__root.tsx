@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PetMAX Animal Care — Modern, friendly pet care" },
+      { title: "PetMAX Advanced Veterinary Clinic — Modern, friendly pet care" },
       {
         name: "description",
         content:
-          "PetMAX Animal Care: modern, friendly veterinary services for dogs, cats, birds, and small pets. Preventative, urgent, and dental care designed to feel like home.",
+          "PetMAX Advanced Veterinary Clinic: modern, friendly veterinary services for dogs, cats, birds, and small pets. Preventative, urgent, and dental care designed to feel like home.",
       },
-      { name: "author", content: "PetMAX Animal Care" },
-      { property: "og:title", content: "PetMAX Animal Care — Modern, friendly pet care" },
+      { name: "author", content: "PetMAX Advanced Veterinary Clinic" },
+      { property: "og:title", content: "PetMAX Advanced Veterinary Clinic — Modern, friendly pet care" },
       {
         property: "og:description",
         content:
