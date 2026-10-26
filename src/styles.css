@@ -368,7 +368,7 @@ section[id] {
 .site-header .social-link, .site-footer .social-link { color: #fff; }
 .clinic-brand { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; }
 .clinic-brand-emblem { display: block; position: relative; width: 66px; height: 66px; overflow: hidden; border-radius: 50%; background: #fff; flex-shrink: 0; }
-.clinic-brand-emblem img { position: absolute; width: 174px; max-width: none; height: 66px; left: -2px; top: 0; }
+.clinic-brand-emblem img { position: absolute; width: 158px; max-width: none; height: 66px; left: -2px; top: 0; }
 .clinic-brand-copy { display: flex; flex-direction: column; color: white; line-height: 1.25; }
 .clinic-brand-copy strong { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
 .clinic-brand-copy > span { font-size: 11px; font-weight: 600; }
@@ -376,7 +376,7 @@ section[id] {
 .site-footer .clinic-brand { margin-bottom: 12px; }
 @media (max-width: 480px) {
   .clinic-brand-emblem { width: 52px; height: 52px; }
-  .clinic-brand-emblem img { width: 137px; height: 52px; }
+  .clinic-brand-emblem img { width: 124px; height: 52px; }
   .clinic-brand-copy strong { font-size: 26px; }
   .clinic-brand-copy > span { font-size: 10px; }
   .clinic-brand-copy small { font-size: 9px; }

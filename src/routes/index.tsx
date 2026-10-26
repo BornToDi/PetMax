@@ -85,12 +85,12 @@ import team6 from "@/assets/team-6.jpg";
 import space1 from "@/assets/space-1.jpg";
 import space2 from "@/assets/space-2.jpg";
 import space3 from "@/assets/space-3.jpg";
-const logoAsset = { url: "/petmax-logo-v2.png" };
+const logoAsset = { url: "/petmax-logo-v3.png" };
 
 function ClinicLogo() {
   return (
-    <span className="clinic-brand" role="img" aria-label="PetMAX Advanced Veterinary Clinic ? Because every life matters">
-      <span className="clinic-brand-emblem"><img src={logoAsset.url} alt="" width={2048} height={778} /></span>
+    <span className="clinic-brand" role="img" aria-label="PetMAX Advanced Veterinary Clinic - Because every life matters">
+      <span className="clinic-brand-emblem"><img src={logoAsset.url} alt="" width={1246} height={522} /></span>
       <span className="clinic-brand-copy"><strong>PetMAX</strong><span>Advanced Veterinary Clinic</span><small>Because every life matters</small></span>
     </span>
   );
@@ -281,7 +281,7 @@ function Hero() {
           <div className="hero-image-wrap"><img src={heroWide} alt="Veterinarian gently holding a golden retriever puppy" width={1920} height={1088} fetchPriority="high" /></div>
           <div className="hero-image-label"><span className="status-dot" /> Here for every wag & purr.</div>
           <div className="care-stamp"><PawPrint className="size-6" /><span>Small paws.<br /><strong>Big priority.</strong></span></div>
-          <a href="tel:+8801755766766" className="hero-call"><span><Phone className="size-5" /></span><div><small>A friendly voice away</small><strong>01755 766 766</strong></div><ArrowUpRight className="size-5" /></a>
+          <a href="tel:+8801332881166" className="hero-call"><span><Phone className="size-5" /></span><div><small>A friendly voice away</small><strong>01332-88-11-66</strong></div><ArrowUpRight className="size-5" /></a>
           <span className="hero-photo-caption">PETMAX ANIMAL CARE · BASUNDHARA, DHAKA</span>
         </div>
       </div>
@@ -336,7 +336,7 @@ function Services() {
               />
               <h3 className="font-display text-2xl text-primary">{s.title}</h3>
               <p className="mb-6 mt-3 text-sm leading-relaxed text-foreground/70">{s.desc}</p>
-              <a href={s.title === "Emergency visits" ? "tel:+8801755766766" : "#booking"} className="mt-auto inline-flex min-h-11 items-center gap-2 self-start text-sm font-bold text-primary underline-offset-4 hover:underline">
+              <a href={s.title === "Emergency visits" ? "tel:+8801332881166" : "#booking"} className="mt-auto inline-flex min-h-11 items-center gap-2 self-start text-sm font-bold text-primary underline-offset-4 hover:underline">
                 {s.title === "Emergency visits" ? "Call for urgent care" : "Plan a visit"}<ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 <span className="sr-only"> for {s.title}</span>
               </a>
@@ -460,7 +460,7 @@ function Contact() {
             </p>
             <p className="flex items-center gap-3">
               <Phone className="size-4 text-accent" />
-              <a href="tel:+8801755766766" className="underline-offset-4 hover:underline">+88 01755 766 766</a>
+              <a href="tel:+8801332881166" className="underline-offset-4 hover:underline">01332-88-11-66</a>
             </p>
             <p className="flex items-center gap-3">
               <Mail className="size-4 text-accent" />
@@ -504,7 +504,7 @@ function Booking() {
             we&rsquo;ll be in touch to confirm your visit.
           </p>
           <div className="mt-10 space-y-4 text-primary-foreground/85">
-            <p className="flex items-center gap-3"><Phone className="size-4 text-dusk" />+88 01755 766 766</p>
+            <p className="flex items-center gap-3"><Phone className="size-4 text-dusk" />01332-88-11-66</p>
             <p className="flex items-center gap-3"><MapPin className="size-4 text-dusk" />Level 4, Seven Star Super Shop Building, Plot 790/B, Road 18, Block K, Bashundhara RA, Dhaka 1229</p>
           </div>
         </div>
@@ -579,7 +579,7 @@ function Footer() {
             <p className="font-display text-primary">Contact</p>
             <ul className="mt-4 space-y-2 text-sm text-foreground/65">
               <li>Level 4, Seven Star Super Shop Building, Plot 790/B, Road 18, Block K, Bashundhara RA, Dhaka 1229</li>
-              <li>+88 01755 766 766</li>
+              <li>01332-88-11-66</li>
               <li>hpetmax@gmail.com</li>
             </ul>
             <div className="mt-auto pt-5">
