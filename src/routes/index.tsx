@@ -85,16 +85,20 @@ import team6 from "@/assets/team-6.jpg";
 import space1 from "@/assets/space-1.jpg";
 import space2 from "@/assets/space-2.jpg";
 import space3 from "@/assets/space-3.jpg";
-const logoAsset = { url: "/petmax-logo-v3.png" };
+const logoAsset = { url: "/petmax-logo-v5.png" };
 
 function ClinicLogo() {
   return (
-    <span className="clinic-brand" role="img" aria-label="PetMAX Advanced Veterinary Clinic - Because every life matters">
-      <span className="clinic-brand-emblem"><img src={logoAsset.url} alt="" width={1246} height={522} /></span>
-      <span className="clinic-brand-copy"><strong>PetMAX</strong><span>Advanced Veterinary Clinic</span><small>Because every life matters</small></span>
-    </span>
+    <img
+      src={logoAsset.url}
+      alt="PetMAX Advanced Veterinary Clinic - Because every life matters"
+      width={1246}
+      height={522}
+      className="clinic-logo-full"
+    />
   );
 }
+
 
 import helloPets from "@/assets/hello-pets.png";
 

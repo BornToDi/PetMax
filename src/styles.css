@@ -297,11 +297,11 @@ section[id] {
 .tour-photo { border-radius: 12px; }
 .tour-photo:nth-child(2) { margin-top: 32px; }
 .tour-photo:nth-child(3) { margin-top: 64px; }
-.contact-section { background: var(--paper); }
+.contact-section { background: #fff7ed; }
 .contact-section .mt-4 > img { display: none; }
 .contact-details > p { border-bottom: 1px solid var(--border); padding-bottom: 18px; font-size: 14px; }
 .clinic-map { min-height: 420px; }
-.booking-section { background: oklch(0.26 0.065 356); }
+.booking-section { background: #163f42; border-bottom: 4px solid #ff8a61; }
 .booking-section > .absolute { display: none; }
 .booking-form input, .booking-form select, .booking-form textarea { border-radius: 8px; }
 .site-footer { background: var(--paper); }
@@ -355,10 +355,10 @@ section[id] {
 .site-header, .site-footer {
   --primary: #ffffff;
   --foreground: #ffffff;
-  --primary-foreground: #42064e;
-  --background: #42064e;
+  --primary-foreground: #5E1642;
+  --background: #5E1642;
   color: #ffffff;
-  background: #42064e;
+  background: #5E1642;
   border-color: #ffffff24;
 }
 .site-header nav { min-height: 96px; }
@@ -366,20 +366,16 @@ section[id] {
 .site-header a[aria-current="location"]:not([aria-label]) { background: #ffffff15; color: #ff8c9e; }
 .site-header .bg-gradient-dusk { background: #ff526f; color: #fff; }
 .site-header .social-link, .site-footer .social-link { color: #fff; }
-.clinic-brand { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; }
-.clinic-brand-emblem { display: block; position: relative; width: 66px; height: 66px; overflow: hidden; border-radius: 50%; background: #fff; flex-shrink: 0; }
-.clinic-brand-emblem img { position: absolute; width: 158px; max-width: none; height: 66px; left: -2px; top: 0; }
-.clinic-brand-copy { display: flex; flex-direction: column; color: white; line-height: 1.25; }
-.clinic-brand-copy strong { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
-.clinic-brand-copy > span { font-size: 11px; font-weight: 600; }
-.clinic-brand-copy small { margin-top: 5px; font-size: 10px; color: #ff809c; }
-.site-footer .clinic-brand { margin-bottom: 12px; }
+.clinic-logo-full {
+  display: block;
+  width: 210px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.site-footer .clinic-logo-full { width: 280px; margin-bottom: 12px; }
 @media (max-width: 480px) {
-  .clinic-brand-emblem { width: 52px; height: 52px; }
-  .clinic-brand-emblem img { width: 124px; height: 52px; }
-  .clinic-brand-copy strong { font-size: 26px; }
-  .clinic-brand-copy > span { font-size: 10px; }
-  .clinic-brand-copy small { font-size: 9px; }
+  .site-header .clinic-logo-full { width: 170px; }
 }
 
 .site-footer .footer-pets {
